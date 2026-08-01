@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============================================================
+     EDIT #1 — Page title (shows in the browser tab & search results)
+     ============================================================ -->
+<title>Robert Rasmussen — XR & Real-Time 3D Engineer</title>
+<meta name="description" content="Robert Rasmussen — software engineer specializing in XR, real-time graphics, and 3D systems." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    /* Palette — dark viewport base, warm "emissive" + cool "depth" accents */
+    --bg:        #0e1116;
+    --bg-2:      #151b23;
+    --bg-3:      #1a212b;
+    --line:      rgba(255, 255, 255, 0.08);
+    --line-2:    rgba(255, 255, 255, 0.14);
+    --text:      #e9edf2;
+    --muted:     #97a4b2;
+    --warm:      #f2b25c;  /* light / emissive — interactive accents */
+    --cool:      #5ecfc4;  /* depth pass — labels & structure */
+
+    --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+    --font-body:    "IBM Plex Sans", system-ui, sans-serif;
+    --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+    --wrap: 980px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--warm); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  :focus-visible {
+    outline: 2px solid var(--warm);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Header / nav ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(14, 17, 22, 0.72);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand:hover { text-decoration: none; }
+  .brand .hex { width: 15px; height: 17px; color: var(--warm); }
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+  .nav-links a { color: var(--muted); }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+  @media (max-width: 680px) {
+    .nav-links { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 L28 128 L0 112 L0 80 Z'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.04;
+    mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 72%);
+    -webkit-mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 72%);
+    pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -180px; right: -140px;
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(242,178,92,0.14), transparent 62%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    padding: 108px 0 92px;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cool);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 22px;
+  }
+  .eyebrow .hex { width: 11px; height: 13px; }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7.5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    line-height: 1.32;
+    color: var(--text);
+    max-width: 34ch;
+    margin: 0 0 26px;
+  }
+  .lede .hl { color: var(--warm); }
+  .hero p.body {
+    max-width: 62ch;
+    color: var(--muted);
+    margin: 0 0 30px;
+  }
+
+  /* tech chip row */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    padding: 5px 12px;
+    background: var(--bg-2);
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 88px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { margin-bottom: 34px; }
+  .sec-head h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 10px 0 0;
+  }
+  .sec-body { max-width: 66ch; color: var(--muted); }
+  .sec-body strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- Video embed ---------- */
+  .video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    margin: 30px 0;
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .video iframe { width: 100%; height: 100%; border: 0; display: block; }
+  /* placeholder shown until you paste an embed */
+  .video-ph {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .video-ph .play {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--line-2);
+    display: grid; place-items: center;
+    color: var(--warm);
+  }
+
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 24px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--cool);
+    letter-spacing: 0.02em;
+  }
+  .tag::before { content: "◇ "; opacity: 0.6; }
+
+  /* ---------- Contact ---------- */
+  .contact-links {
+    display: flex; flex-wrap: wrap; gap: 14px 28px;
+    margin-top: 26px;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+  }
+  .contact-links a { color: var(--text); display: inline-flex; align-items: center; gap: 9px; }
+  .contact-links a .k { color: var(--cool); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 40px 0 60px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <svg class="hex" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 1 L27 8.5 L27 23.5 L14 31 L1 23.5 L1 8.5 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      Robert Rasmussen
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#xr">XR</a>
+      <a href="#digital-twin">Digital Twin</a>
+      <a href="#game">Game Dev</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================== INTRO ============================== -->
+<div class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">
+      <svg class="hex" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 1 L27 8.5 L27 23.5 L14 31 L1 23.5 L1 8.5 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      XR &amp; Real-Time 3D Engineer
+    </p>
+
+    <!-- EDIT #2 — Your name & one-line pitch -->
+    <h1>Robert Rasmussen</h1>
+    <p class="lede">I take spatial and real-time 3D products from concept to production — <span class="hl">as the sole engineer.</span></p>
+
+    <p class="body">
+      Software engineer specializing in XR, real-time graphics, and 3D systems. Roughly a decade
+      building VR/AR applications, a production digital twin, and custom rendering pipelines from the
+      ground up. Recently completed an M.S. in Computer Science, and currently exploring engineering
+      roles across Europe.
+    </p>
+
+    <div class="chips">
+      <span class="chip">Unity</span>
+      <span class="chip">Unreal</span>
+      <span class="chip">Bevy</span>
+      <span class="chip">C#</span>
+      <span class="chip">C++</span>
+      <span class="chip">Rust</span>
+      <span class="chip">Python</span>
+      <span class="chip">OpenXR</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- ============================== XR ============================== -->
+<section id="xr">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Spatial Computing</p>
+      <h2>XR Applications</h2>
+    </div>
+
+    <div class="sec-body reveal">
+      <p>
+        Owned architecture through deployment for VR/AR apps across <strong>Meta Quest, Quest 2, and
+        Apple Vision Pro</strong>, extending several beyond the headset to native PC and mobile play.
+        Earlier research work included an interactive VR chemistry kit — spawn atoms, form bonds, and
+        build molecules in 3D, with real-time recognition of the structures you assemble and a quiz
+        mode — and a VR conducting app that turned the headset controllers into a baton, analyzing
+        controller motion to derive tempo, articulation, and dynamics and drive live MIDI playback.
+        Also shipped Android AR, multiplayer VR, and early HoloLens and Google Glass prototypes.
+      </p>
+    </div>
+
+    <!-- VIDEO SLOT — replace the whole <div class="video-ph"> line with your embed, e.g.:
+         <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+         (On YouTube: Share → Embed → copy the <iframe> code. "Unlisted" videos work fine.) -->
+    <div class="video reveal">
+      <div class="video-ph"><span class="play">▶</span> Video embed — headset apps</div>
+    </div>
+
+    <!-- Second video slot (delete this whole .video block if you only want one) -->
+    <div class="video reveal">
+      <div class="video-ph"><span class="play">▶</span> Video embed — VR conducting app</div>
+    </div>
+
+    <div class="tags reveal">
+      <span class="tag">Meta Quest</span>
+      <span class="tag">Apple Vision Pro</span>
+      <span class="tag">OpenXR</span>
+      <span class="tag">ARKit / RealityKit</span>
+      <span class="tag">ARCore</span>
+      <span class="tag">Unity</span>
+      <span class="tag">Unreal</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DIGITAL TWIN ============================== -->
+<section id="digital-twin">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Real-Time Data</p>
+      <h2>Solar Energy Digital Twin</h2>
+    </div>
+
+    <div class="sec-body reveal">
+      <p>
+        Architected and built a production digital-twin web application that visualizes <strong>live
+        data</strong> for a solar-energy program, with navigable 3D environments modeling all five
+        solar-farm sites. Delivered as a Unity WebGL build served over the web — and still in active
+        production use.
+      </p>
+    </div>
+
+    <div class="video reveal">
+      <div class="video-ph"><span class="play">▶</span> Video embed — digital twin walkthrough</div>
+    </div>
+
+    <div class="tags reveal">
+      <span class="tag">Unity</span>
+      <span class="tag">WebGL</span>
+      <span class="tag">Real-time data</span>
+      <span class="tag">3D visualization</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== GAME DEV ============================== -->
+<section id="game">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Personal Project</p>
+      <h2>Open-World Game in Bevy</h2>
+    </div>
+
+    <div class="sec-body reveal">
+      <p>
+        An in-progress 3D open-world game built in <strong>Bevy (Rust)</strong>, with an HD-2D visual
+        style and a hexagonal world structure. It doubles as a sandbox for hand-written real-time
+        rendering: WGSL shaders for volumetric fog, interactive water and grass, and cloud shadows
+        over voxel terrain, on top of a bindless terrain material pipeline — plus a custom
+        Blender-to-Bevy asset workflow and tooling.
+      </p>
+    </div>
+
+    <div class="video reveal">
+      <div class="video-ph"><span class="play">▶</span> Video embed — gameplay / rendering demo</div>
+    </div>
+
+    <div class="tags reveal">
+      <span class="tag">Bevy</span>
+      <span class="tag">Rust</span>
+      <span class="tag">WGSL</span>
+      <span class="tag">Custom shaders</span>
+      <span class="tag">Voxel terrain</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CONTACT ============================== -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Get in Touch</p>
+      <h2>Contact</h2>
+    </div>
+
+    <div class="sec-body reveal">
+      <p>Open to software engineering roles across Europe. Email is the best way to reach me.</p>
+    </div>
+
+    <!-- EDIT #3 — Your links. Replace the href values; delete any line you don't want. -->
+    <div class="contact-links reveal">
+      <a href="mailto:bobbyras90@gmail.com"><span class="k">email</span> bobbyras90@gmail.com</a>
+      <a href="https://github.com/YOUR-USERNAME"><span class="k">github</span> /YOUR-USERNAME</a>
+      <a href="https://www.linkedin.com/in/YOUR-PROFILE"><span class="k">linkedin</span> /YOUR-PROFILE</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Robert Rasmussen</span>
+    <span>Built as a static site</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal — quietly fades sections in; disabled if reduced motion is preferred.
+  (function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var els = document.querySelectorAll(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
