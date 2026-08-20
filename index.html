@@ -113,11 +113,28 @@
   .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M28 64 L56 80 L56 112 L28 128 L0 112 L0 80 Z'/%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.04;
+    /* Cell fill: cool blue tint that gets darker toward the bottom of the page.
+       Not masked, so the tint runs the full height of the hero. */
+    background-image: linear-gradient(
+      to bottom,
+      rgba(126, 170, 245, 0.055) 0%,
+      rgba(80,  122, 200, 0.048) 45%,
+      rgba(40,  68,  134, 0.042) 78%,
+      rgba(22,  40,  92,  0.038) 100%
+    );
+    pointer-events: none;
+  }
+  /* Hex outlines — unchanged white lattice, painted over the tinted cells.
+     The radial fade applies to the outlines only. */
+  .hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 72%);
     -webkit-mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 72%);
-    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z'/%3E%3Cpath d='M0 48 L28 64 L28 96 L0 112 L-28 96 L-28 64 Z'/%3E%3Cpath d='M56 48 L84 64 L84 96 L56 112 L28 96 L28 64 Z'/%3E%3Cpath d='M0 -48 L28 -32 L28 0 L0 16 L-28 0 L-28 -32 Z'/%3E%3Cpath d='M56 -48 L84 -32 L84 0 L56 16 L28 0 L28 -32 Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 56px 96px;
+    opacity: 0.04;
   }
   .hero-glow {
     position: absolute;
@@ -205,30 +222,89 @@
     overflow: hidden;
   }
   .video iframe { width: 100%; height: 100%; border: 0; display: block; }
-  /* placeholder shown until you paste an embed */
-  .video-ph {
-    position: absolute;
+
+  /* ---------- Image gallery ---------- */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 30px 0;
+  }
+  /* a full-width lead shot: add class="wide" to a .shot to span the row */
+  .shot.wide { grid-column: 1 / -1; aspect-ratio: 21 / 9; }
+
+  .shot {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    margin: 0;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-2);
+    cursor: zoom-in;
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  .shot:hover { transform: translateY(-3px); border-color: var(--warm); }
+  .shot img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform .4s ease;
+  }
+  .shot:hover img { transform: scale(1.04); }
+  .shot figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    color: var(--text);
+    padding: 26px 12px 11px;
+    background: linear-gradient(transparent, rgba(14, 17, 22, 0.94));
+  }
+  .shot figcaption .k { color: var(--cool); display: block; }
+
+  /* ---------- Lightbox ---------- */
+  .lb {
+    position: fixed;
     inset: 0;
-    display: flex;
-    flex-direction: column;
+    z-index: 50;
+    display: none;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    color: var(--muted);
+    padding: 32px;
+    background: rgba(8, 10, 14, 0.9);
+    backdrop-filter: blur(6px);
+    cursor: zoom-out;
+  }
+  .lb.open { display: flex; }
+  .lb img {
+    max-width: min(1100px, 94vw);
+    max-height: 88vh;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .lb figcaption {
+    position: absolute;
+    bottom: 24px;
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 28px 28px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
   }
-  .video-ph .play {
-    width: 46px; height: 46px; border-radius: 50%;
+  .lb-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    width: 40px; height: 40px;
     border: 1px solid var(--line-2);
+    border-radius: 50%;
+    background: var(--bg-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
     display: grid; place-items: center;
-    color: var(--warm);
   }
+  .lb-close:hover { border-color: var(--warm); color: var(--warm); }
 
   .tags {
     display: flex; flex-wrap: wrap; gap: 8px;
@@ -342,16 +418,40 @@
       </p>
     </div>
 
-    <!-- VIDEO SLOT — replace the whole <div class="video-ph"> line with your embed, e.g.:
-         <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-         (On YouTube: Share → Embed → copy the <iframe> code. "Unlisted" videos work fine.) -->
     <div class="video reveal">
-      <div class="video-ph"><span class="play">▶</span> Video embed — headset apps</div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ICIvqYdo3TU?si=Rui8RlrkuYyVHAze" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
 
-    <!-- Second video slot (delete this whole .video block if you only want one) -->
-    <div class="video reveal">
-      <div class="video-ph"><span class="play">▶</span> Video embed — VR conducting app</div>
+    <div class="gallery reveal">
+      <figure class="shot" data-full="images/chem-vr-1.jpg">
+        <img src="images/chem-vr-1.jpg" alt="VR chemistry kit - Intro scene with molecular-shaped fireworks" loading="lazy" />
+        <figcaption><span class="k">ChemVR</span>VR Chemistry Kit to build and recognize molecules</figcaption>
+      </figure>
+
+      <figure class="shot" data-full="images/chem-vr-2.jpg">
+        <img src="images/chem-vr-2.jpg" alt="VR chemistry kit - Constructed molecule with an information dashboard" loading="lazy" />
+        <figcaption><span class="k">ChemVR</span>Molecule building · real-time recognition · quiz mode</figcaption>
+      </figure>
+
+      <figure class="shot" data-full="images/chem-vr-3.jpg">
+        <img src="images/chem-vr-3.jpg" alt="VR chemistry kit - Molecules float upwards" loading="lazy" />
+        <figcaption><span class="k">ChemVR</span>A beatiful environment to learn and practice chemistry</figcaption>
+      </figure>
+
+      <figure class="shot" data-full="images/toyota-1.jpg">
+        <img src="images/toyota-1.jpg" alt="Social XR for Toyota - A view of a Toyota Tundra" loading="lazy" />
+        <figcaption><span class="k">Toyota Social XR</span>A multi-user XR environment to showcase new Toyota vehicles</figcaption>
+      </figure>
+
+      <figure class="shot" data-full="images/toyota-2.jpg">
+        <img src="images/toyota-2.jpg" alt="Social XR for Toyota - A user sits inside a Toyota Tundra" loading="lazy" />
+        <figcaption><span class="k">Toyota Social XR</span>Enter the vehicle to see the full dashboard</figcaption>
+      </figure>
+
+      <figure class="shot" data-full="images/pavilion-1.jpg">
+        <img src="images/pavilion-1.jpg" alt="Aquent Pavilion - A multi-user meeting space for Aquent" loading="lazy" />
+        <figcaption><span class="k">Aquent Pavilion</span>A digital space for users to meet and explore</figcaption>
+      </figure>
     </div>
 
     <div class="tags reveal">
@@ -383,8 +483,10 @@
       </p>
     </div>
 
+    https://youtu.be/pS7N5id3Ej8
+
     <div class="video reveal">
-      <div class="video-ph"><span class="play">▶</span> Video embed — digital twin walkthrough</div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/pS7N5id3Ej8?si=iQ1AmMEZ_ghyulZg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
 
     <div class="tags reveal">
@@ -414,8 +516,18 @@
       </p>
     </div>
 
-    <div class="video reveal">
-      <div class="video-ph"><span class="play">▶</span> Video embed — gameplay / rendering demo</div>
+    <div class="gallery reveal">
+      <figure class="shot" data-full="images/game-1.jpg">
+        <img src="images/game-1.jpg" alt="Unnamed game - Characters stand in front of a massive structure" loading="lazy" />
+      </figure>
+
+      <figure class="shot" data-full="images/game-2.jpg">
+        <img src="images/game-2.jpg" alt="Unnamed game - Characters look down on a group of tents inside a large stone structure" loading="lazy" />
+      </figure>
+
+      <figure class="shot" data-full="images/game-3.jpg">
+        <img src="images/game-3.jpg" alt="Unnamed game - Characters look down upon a grassy field with many tents" loading="lazy" />
+      </figure>
     </div>
 
     <div class="tags reveal">
@@ -440,16 +552,21 @@
       <p>Open to software engineering roles across Europe. Email is the best way to reach me.</p>
     </div>
 
-    <!-- EDIT #3 — Your links. Replace the href values; delete any line you don't want. -->
     <div class="contact-links reveal">
-      <a href="mailto:bobbyras90@gmail.com"><span class="k">email</span> bobbyras90@gmail.com</a>
-      <a href="https://github.com/YOUR-USERNAME"><span class="k">github</span> /YOUR-USERNAME</a>
-      <a href="https://www.linkedin.com/in/YOUR-PROFILE"><span class="k">linkedin</span> /YOUR-PROFILE</a>
+      <a href="mailto:robertrasdev@gmail.com"><span class="k">email</span> robertrasdev@gmail.com</a>
+      <a href="https://github.com/rsrasmu2"><span class="k">github</span> /rsrasmu2</a>
     </div>
   </div>
 </section>
 
 </main>
+
+<!-- Lightbox (shared by every .gallery on the page) -->
+<div class="lb" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <img id="lbImg" src="" alt="" />
+  <figcaption id="lbCap"></figcaption>
+</div>
 
 <footer>
   <div class="wrap">
@@ -473,6 +590,38 @@
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
     els.forEach(function (el) { io.observe(el); });
+  })();
+
+  // Lightbox — click any gallery shot to view it large; Esc or click to close.
+  (function () {
+    var lb = document.getElementById("lightbox");
+    if (!lb) return;
+    var lbImg = document.getElementById("lbImg");
+    var lbCap = document.getElementById("lbCap");
+
+    function open(fig) {
+      var img = fig.querySelector("img");
+      if (!img) return;
+      lbImg.src = fig.getAttribute("data-full") || img.currentSrc || img.src;
+      lbImg.alt = img.alt || "";
+      var cap = fig.querySelector("figcaption");
+      lbCap.textContent = cap ? cap.textContent : "";
+      lb.classList.add("open");
+      lb.setAttribute("aria-hidden", "false");
+    }
+    function close() {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden", "true");
+      lbImg.src = "";
+    }
+
+    document.querySelectorAll(".shot").forEach(function (fig) {
+      fig.addEventListener("click", function () { open(fig); });
+    });
+    lb.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close();
+    });
   })();
 </script>
 
